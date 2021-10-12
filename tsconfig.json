@@ -1,3 +1,21 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json"
+  "compilerOptions": {
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "outDir": "./build",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "ES2021"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "tests"
+  ],
+  "hooks": [
+    "copy-files"
+  ]
 }

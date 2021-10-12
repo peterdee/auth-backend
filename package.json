@@ -1,16 +1,31 @@
 {
   "name": "auth-server",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Auth server for various purposes",
-  "main": "index.js",
+  "private": true,
+  "author": {
+    "name": "Peter Dyumin",
+    "url": "https://github.com/peterdee"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch & nodemon --delay 2 ./build/index.js",
     "lint": "eslint",
+    "start": "npm run build && node ./build/index.js",
     "test": "npx jest"
   },
-  "author": "",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "fastify": "^3.22.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-favicon": "^3.1.0",
+    "fastify-formbody": "^5.1.0",
+    "fastify-helmet": "^5.3.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.10"
   },
@@ -25,7 +40,9 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
     "jest": "^27.2.5",
+    "nodemon": "^2.0.13",
     "ts-jest": "^27.0.5",
+    "tsc-hooks": "^1.1.2-beta.3",
     "typescript": "^4.4.3"
   }
 }

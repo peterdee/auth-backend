@@ -35,7 +35,7 @@ export const createToken = async ({
         return reject(error);
       }
       return resolve(token as string);
-    }
+    },
   ),
 );
 

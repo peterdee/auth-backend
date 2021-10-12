@@ -16,5 +16,4 @@ export const REFRESH_TOKEN_EXPIRATION = (
   Number(environment.ACCESS_TOKEN_EXPIRATION) || 14
 ) * 24 * 60 * 60;
 
-
 export const PORT = Number(environment.PORT) || 6500;
