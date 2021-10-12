@@ -4,9 +4,13 @@ import fastify from 'fastify';
 import favicon from 'fastify-favicon';
 import helmet from 'fastify-helmet';
 
+import { ENV, ENVS } from './configuration';
+
 async function buildServer() {
   const server = fastify({
-    logger: true,
+    logger: {
+      prettyPrint: ENV === ENVS.development,
+    },
   });
 
   await server.register(bodyParser);
@@ -15,7 +19,7 @@ async function buildServer() {
     favicon,
     {
       name: 'favicon.ico',
-      path: './assets',
+      path: './src/assets',
     },
   );
   await server.register(helmet);
