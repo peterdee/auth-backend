@@ -5,6 +5,7 @@ import favicon from 'fastify-favicon';
 import helmet from 'fastify-helmet';
 
 import { ENV, ENVS } from './configuration';
+import indexRouter from './apis/index';
 
 async function buildServer() {
   const server = fastify({
@@ -24,9 +25,7 @@ async function buildServer() {
   );
   await server.register(helmet);
 
-  server.get('/', (_, reply) => {
-    reply.send({ info: 'OK' });
-  });
+  await server.register(indexRouter);
 
   return server;
 }
