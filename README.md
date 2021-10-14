@@ -7,3 +7,9 @@ Auth server for various purposes
 ```shell script
 npm run dev
 ```
+
+### Tests
+
+```shell script
+npm run test
+```

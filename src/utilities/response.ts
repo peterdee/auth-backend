@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-// import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../configuration/index.js';
+
+import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../configuration';
 
 interface ResponseParams {
   data?: any;
@@ -15,20 +16,22 @@ interface ResponseObject {
   info: string;
   request: string;
   status: number;
+  uptime: number;
 }
 
 export default function createResponse({
   data,
-  info = 'OK',
+  info = RESPONSE_MESSAGES.ok,
   reply,
   request,
-  status = 200,
+  status = RESPONSE_STATUSES.ok,
 }: ResponseParams): FastifyReply {
   const responseObject: ResponseObject = {
     datetime: Date.now(),
     info,
     request: `${request.url} [${request.method}]`,
     status,
+    uptime: Math.floor(process.uptime()),
   };
 
   if (data) {
