@@ -1,11 +1,13 @@
 import { Schema } from 'mongoose';
 
 import { Generic } from './types';
+import { ROLES } from '../../configuration';
 
 export interface User extends Generic {
   email: string;
   firstName: string;
   lastName: string;
+  role: keyof typeof ROLES;
 }
 
 export const UserSchema = new Schema<User>({

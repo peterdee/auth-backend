@@ -8,6 +8,7 @@ import authRouter from './apis/auth';
 import database from './database';
 import { ENV, ENVS } from './configuration';
 import indexRouter from './apis/index';
+import gracefulShutdown from './utilities/graceful-shutdown';
 
 async function buildServer() {
   const server = fastify({
@@ -31,6 +32,23 @@ async function buildServer() {
 
   await server.register(authRouter);
   await server.register(indexRouter);
+
+  process.on(
+    'SIGINT',
+    (signal: string): Promise<void> => gracefulShutdown(
+      signal,
+      server,
+      database,
+    ),
+  );
+  process.on(
+    'SIGTERM',
+    (signal: string): Promise<void> => gracefulShutdown(
+      signal,
+      server,
+      database,
+    ),
+  );
 
   return server;
 }

@@ -7,8 +7,22 @@ import { Password, PasswordSchema } from './schemas/Password.schema';
 import { User, UserSchema } from './schemas/User.schema';
 import { UserSecret, UserSecretSchema } from './schemas/UserSecret.schema';
 
-async function connect(connectionString: string) {
-  const connection = await createConnection(connectionString).asPromise();
+interface ConnectionOptions {
+  [key: string]: boolean | number | string;
+}
+
+interface ConnectResult {
+  connection: Connection;
+  PasswordModel: Model<Password>;
+  UserModel: Model<User>;
+  UserSecretModel: Model<UserSecret>;
+}
+
+async function connect(
+  connectionString: string,
+  options: ConnectionOptions,
+): Promise<ConnectResult> {
+  const connection = await createConnection(connectionString, options).asPromise();
   if (connection.readyState === 1) {
     log('-- database connected');
   }
@@ -33,9 +47,11 @@ async function connect(connectionString: string) {
 }
 
 class Database {
-  private static connection: Connection;
-
   private connectionString: string;
+
+  private connectionOptions: ConnectionOptions;
+
+  public connection: Connection;
 
   public PasswordModel: Model<Password>;
 
@@ -43,14 +59,10 @@ class Database {
 
   public UserSecretModel: Model<UserSecret>;
 
-  constructor(connectionString: string) {
-    this.connectionString = connectionString;
-  }
-
-  private async createConnection() {
+  private async createConnection(): Promise<void | Error> {
     try {
-      const result = await connect(this.connectionString);
-      Database.connection = result.connection;
+      const result = await connect(this.connectionString, this.connectionOptions);
+      this.connection = result.connection;
       this.PasswordModel = result.PasswordModel;
       this.UserModel = result.UserModel;
       this.UserSecretModel = result.UserSecretModel;
@@ -59,15 +71,39 @@ class Database {
     }
   }
 
-  async connect() {
-    if (!Database.connection) {
+  async connect(
+    connectionString = DATABASE_CONNECTION_STRING,
+    options?: ConnectionOptions,
+  ): Promise<Connection> {
+    this.connectionOptions = options || {};
+    this.connectionString = connectionString;
+    if (!this.connection) {
       await this.createConnection();
-      return Database.connection;
+      return this.connection;
     }
-    return Database.connection;
+    return this.connection;
+  }
+
+  async disconnect(): Promise<void> {
+    if (this.connection) {
+      await this.connection.close();
+    }
+  }
+
+  async getInstance(): Promise<Connection | null> {
+    if (!this.connection) {
+      return null;
+    }
+    return this.connection;
   }
 }
 
-export { Password, User, UserSecret };
+const Instance = new Database();
 
-export default new Database(DATABASE_CONNECTION_STRING);
+export {
+  Password,
+  User,
+  UserSecret,
+};
+
+export default Instance;

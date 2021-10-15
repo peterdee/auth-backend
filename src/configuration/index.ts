@@ -36,3 +36,8 @@ export const RESPONSE_STATUSES = {
   ok: 200,
   unauthorized: 401,
 } as const;
+
+export const ROLES = {
+  admin: 'admin',
+  user: 'user',
+} as const;
