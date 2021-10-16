@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../configuration';
+// import store from '../store';
 
 interface ResponseParams {
   data?: any;
@@ -13,6 +14,7 @@ interface ResponseParams {
 interface ResponseObject {
   data?: any;
   datetime: number;
+  delay: number;
   info: string;
   request: string;
   status: number;
@@ -26,8 +28,10 @@ export default function createResponse({
   request,
   status = RESPONSE_STATUSES.ok,
 }: ResponseParams): FastifyReply {
+  // const stored = store.getStore();
   const responseObject: ResponseObject = {
     datetime: Date.now(),
+    delay: Date.now() - 1,
     info,
     request: `${request.url} [${request.method}]`,
     status,
