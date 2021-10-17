@@ -2,10 +2,25 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import buildServer from '../src/server';
+import database from '../src/database';
 
 describe(
   'Server launching',
   (): void => {
+    afterAll(
+      async () => {
+        console.log('run after');
+        await database.disconnect();
+      },
+    );
+
+    beforeAll(
+      async () => {
+        console.log('run before');
+        await database.connect();
+      },
+    );
+
     it(
       'Should launch the server',
       async (): Promise<void> => {

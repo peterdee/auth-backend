@@ -22,7 +22,7 @@ async function connect(
   connectionString: string,
   options: ConnectionOptions,
 ): Promise<ConnectResult> {
-  const connection = await createConnection(connectionString, options).asPromise();
+  const connection = createConnection(connectionString, options);
   if (connection.readyState === 1) {
     log('-- database connected');
   }
