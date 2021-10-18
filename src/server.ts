@@ -6,7 +6,7 @@ import helmet from 'fastify-helmet';
 
 import authRouter from './apis/auth';
 import database from './database';
-import delay from './middlewares/delay';
+import delay from './hooks/delay';
 import { ENV, ENVS } from './configuration';
 import indexRouter from './apis/index';
 import gracefulShutdown from './utilities/graceful-shutdown';
@@ -18,9 +18,10 @@ async function buildServer() {
     },
   });
 
+  server.addHook('onRequest', delay);
+
   await database.connect();
 
-  await server.register(delay);
   await server.register(bodyParser);
   await server.register(cors);
   await server.register(
