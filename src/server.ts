@@ -10,6 +10,7 @@ import delay from './hooks/delay';
 import { ENV, ENVS } from './configuration';
 import indexRouter from './apis/index';
 import gracefulShutdown from './utilities/graceful-shutdown';
+import seeding from './database/seeding';
 
 async function buildServer() {
   const server = fastify({
@@ -21,6 +22,7 @@ async function buildServer() {
   server.addHook('onRequest', delay);
 
   await database.connect();
+  await seeding();
 
   await server.register(bodyParser);
   await server.register(cors);

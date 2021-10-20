@@ -1,4 +1,4 @@
-import { Connection, createConnection, Model } from 'mongoose';
+import mongoose, { Connection, Model } from 'mongoose';
 
 import { DATABASE_CONNECTION_STRING } from '../configuration';
 import log from '../utilities/log';
@@ -22,7 +22,20 @@ async function connect(
   connectionString: string,
   options: ConnectionOptions,
 ): Promise<ConnectResult> {
-  const connection = createConnection(connectionString, options);
+  const connection = await new Promise<Connection>(
+    (resolve, reject) => mongoose.connect(
+      connectionString,
+      options,
+      (error) => {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(mongoose.connection);
+      },
+    ),
+  );
+
   if (connection.readyState === 1) {
     log('-- database connected');
   }
@@ -86,7 +99,7 @@ class Database {
 
   async disconnect(): Promise<void> {
     if (this.connection) {
-      await this.connection.close();
+      await this.connection.close(true);
     }
   }
 

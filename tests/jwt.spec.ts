@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import {
   createToken,
   TokenPayload,
@@ -18,7 +20,7 @@ describe(
           id: ID,
           secret: SECRET,
         });
-        expect(typeof token).toBe('string');
+        expect(typeof token).to.be.a('string');
       },
     );
     it(
@@ -33,8 +35,8 @@ describe(
           secret: SECRET,
           token: String(token),
         });
-        expect(id).toBeTruthy();
-        expect(id).toBe(ID);
+        expect(id).to.exist;
+        expect(id).to.be.equal(ID);
       },
     );
     it(
@@ -52,8 +54,8 @@ describe(
           });
         } catch (error: any) {
           const { message = '' } = error;
-          expect(message).toBeTruthy();
-          expect(message).toBe('invalid signature');
+          expect(message).to.exist;
+          expect(message).to.equal('invalid signature');
         }
       },
     );

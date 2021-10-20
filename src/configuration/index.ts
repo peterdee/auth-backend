@@ -11,6 +11,8 @@ export const ENVS = {
 } as const;
 
 export const {
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
   DATABASE_CONNECTION_STRING,
   ENV = ENVS.development,
 } = environment;
