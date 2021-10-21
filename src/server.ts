@@ -22,7 +22,7 @@ async function buildServer() {
   server.addHook('onRequest', delay);
 
   await database.connect();
-  await seeding();
+  await seeding(database);
 
   await server.register(bodyParser);
   await server.register(cors);

@@ -1,10 +1,10 @@
 import { hash } from 'scryptwrap';
 
 import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLES } from '../configuration';
-import database, { User } from './index';
+import Database, { User } from './index';
 import log from '../utilities/log';
 
-export default async function seeding(): Promise<Error | void> {
+export default async function seeding(database: typeof Database): Promise<Error | void> {
   try {
     const existing = await database.UserModel.findOne({
       email: ADMIN_EMAIL,

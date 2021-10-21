@@ -1,24 +1,15 @@
-import { Schema } from 'mongoose';
-
 import { Generic } from './types';
+import schemaWrapper from './schema-wrapper';
 
 export interface Password extends Generic {
   hash: string;
   userId: string;
 }
 
-export const PasswordSchema = new Schema<Password>({
-  created: {
-    required: true,
-    type: Number,
-  },
+export default schemaWrapper<Password>({
   hash: {
     required: true,
     type: String,
-  },
-  updated: {
-    required: true,
-    type: Number,
   },
   userId: {
     required: true,

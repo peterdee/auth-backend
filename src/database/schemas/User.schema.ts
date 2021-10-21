@@ -1,7 +1,6 @@
-import { Schema } from 'mongoose';
-
 import { Generic } from './types';
 import { ROLES } from '../../configuration';
+import schemaWrapper from './schema-wrapper';
 
 export interface User extends Generic {
   email: string;
@@ -10,11 +9,7 @@ export interface User extends Generic {
   role: keyof typeof ROLES;
 }
 
-export const UserSchema = new Schema<User>({
-  created: {
-    required: true,
-    type: Number,
-  },
+export default schemaWrapper<User>({
   email: {
     required: true,
     type: String,
@@ -28,8 +23,8 @@ export const UserSchema = new Schema<User>({
     required: true,
     type: String,
   },
-  updated: {
+  role: {
     required: true,
-    type: Number,
+    type: String,
   },
 });

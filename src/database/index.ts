@@ -3,9 +3,9 @@ import mongoose, { Connection, Model } from 'mongoose';
 import { DATABASE_CONNECTION_STRING } from '../configuration';
 import log from '../utilities/log';
 
-import { Password, PasswordSchema } from './schemas/Password.schema';
-import { User, UserSchema } from './schemas/User.schema';
-import { UserSecret, UserSecretSchema } from './schemas/UserSecret.schema';
+import PasswordSchema, { Password } from './schemas/Password.schema';
+import UserSchema, { User } from './schemas/User.schema';
+import UserSecretSchema, { UserSecret } from './schemas/UserSecret.schema';
 
 interface ConnectionOptions {
   [key: string]: boolean | number | string;
@@ -97,9 +97,9 @@ class Database {
     return this.connection;
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(forced = false): Promise<void> {
     if (this.connection) {
-      await this.connection.close(true);
+      await this.connection.close(forced);
     }
   }
 

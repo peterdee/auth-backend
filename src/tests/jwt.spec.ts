@@ -4,14 +4,14 @@ import {
   createToken,
   TokenPayload,
   verifyToken,
-} from '../src/utilities/jwt';
+} from '../utilities/jwt';
 
 const ID = 'test';
 const INVALID_SECRET = 'invalid';
 const SECRET = 'test';
 
 describe(
-  'JWT module testing',
+  'JWT module',
   (): void => {
     it(
       'Should create signed token',
@@ -35,7 +35,7 @@ describe(
           secret: SECRET,
           token: String(token),
         });
-        expect(id).to.exist;
+        expect(!!id).to.eq(true);
         expect(id).to.be.equal(ID);
       },
     );
@@ -47,14 +47,14 @@ describe(
             id: ID,
             secret: SECRET,
           });
-  
+
           await verifyToken({
             secret: INVALID_SECRET,
             token: String(token),
           });
         } catch (error: any) {
           const { message = '' } = error;
-          expect(message).to.exist;
+          expect(!!message).to.eq(true);
           expect(message).to.equal('invalid signature');
         }
       },
@@ -70,15 +70,15 @@ describe(
           });
 
           await new Promise<void>((resolve) => setTimeout(resolve, 1500));
-  
+
           await verifyToken({
             secret: SECRET,
             token: String(token),
           });
         } catch (error: any) {
           const { message = '' } = error;
-          expect(message).toBeTruthy();
-          expect(message).toBe('jwt expired');
+          expect(!!message).to.eq(true);
+          expect(message).to.equal('jwt expired');
         }
       },
     );
@@ -91,15 +91,15 @@ describe(
             secret: SECRET,
           });
           const malformed = String(token).substr(2);
-  
+
           await verifyToken({
             secret: SECRET,
             token: malformed,
           });
         } catch (error: any) {
           const { message = '' } = error;
-          expect(message).toBeTruthy();
-          expect(message).toBe('invalid token');
+          expect(!!message).to.eq(true);
+          expect(message).to.equal('invalid token');
         }
       },
     );
