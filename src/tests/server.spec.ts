@@ -1,45 +1,30 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
+import { expect } from 'chai';
 
-// import buildServer from '../src/server';
-// import database from '../src/database';
+import buildServer from '../server';
 
-// describe(
-//   'Server launching',
-//   (): void => {
-//     afterAll(
-//       async () => {
-//         console.log('run after');
-//         await database.disconnect();
-//       },
-//     );
+describe(
+  'Test server launching',
+  (): void => {
+    it(
+      'Should launch the server',
+      async (): Promise<void> => {
+        const server = await buildServer();
+        const [responseIndex, responseAPI] = await Promise.all([
+          server.inject({
+            method: 'GET',
+            url: '/',
+          }),
+          server.inject({
+            method: 'GET',
+            url: '/api',
+          }),
+        ]);
 
-//     beforeAll(
-//       async () => {
-//         console.log('run before');
-//         await database.connect();
-//       },
-//     );
+        await server.close();
 
-//     it(
-//       'Should launch the server',
-//       async (): Promise<void> => {
-//         const server = await buildServer();
-//         const [responseIndex, responseAPI] = await Promise.all([
-//           server.inject({
-//             method: 'GET',
-//             url: '/',
-//           }),
-//           server.inject({
-//             method: 'GET',
-//             url: '/api',
-//           }),
-//         ]);
-
-//         await database.disconnect();
-//         expect(responseIndex.statusCode).toBe(200);
-//         expect(responseAPI.statusCode).toBe(200);
-//       },
-//     );
-//   },
-// );
+        expect(responseIndex.statusCode).to.equal(200);
+        expect(responseAPI.statusCode).to.equal(200);
+      },
+    );
+  },
+);

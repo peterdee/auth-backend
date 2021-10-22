@@ -77,8 +77,9 @@ export default async function signInController(
       request,
       reply,
     });
-  } catch {
+  } catch (error) {
     return response({
+      error,
       info: RESPONSE_MESSAGES.internalServerError,
       reply,
       request,

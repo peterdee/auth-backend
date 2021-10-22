@@ -4,7 +4,6 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 dotenv.config();
 
 import database from '../database';
-import seeding  from '../database/seeding';
 
 let mongod = null;
 
@@ -17,7 +16,6 @@ module.exports = {
     async beforeAll() {
       mongod = await MongoMemoryServer.create();
       await database.connect(mongod.getUri());
-      await seeding(database);
     },
   },
 };

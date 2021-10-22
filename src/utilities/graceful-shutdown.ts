@@ -1,16 +1,17 @@
 import { FastifyInstance } from 'fastify';
 
+import Database from '../database';
 import log from './log';
 
 export default async function gracefulShutdown(
   signal: string,
   server: FastifyInstance,
-  database: any,
+  database: typeof Database,
 ): Promise<void> {
   try {
-    log(` > shutting down server due to the signal ${signal}`);
+    log(`-- shutting down server due to the signal ${signal}`);
 
-    await database.disconnect();
+    await database.disconnect(true);
     await server.close();
 
     return process.exit(0);

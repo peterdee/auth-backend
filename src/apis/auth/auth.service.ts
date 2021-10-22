@@ -8,7 +8,7 @@ export default {
   compareHashes: async (
     plaintext: string,
     hashed: string,
-  ): Promise<boolean> => compare(plaintext, hashed),
+  ): Promise<boolean> => compare(hashed, plaintext),
   createHash: async (plaintext: string): Promise<string> => hash(plaintext),
   createRecord: async <T>(
     collection: string,
@@ -36,7 +36,7 @@ export default {
     collection: string,
     field: string,
     value: any,
-  ): Promise<T> => database[`${collection}Model`].findOne({
+  ): Promise<T> => database[`${collection}Collection`].findOne({
     [field]: value,
   }),
 };

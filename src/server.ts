@@ -6,8 +6,8 @@ import helmet from 'fastify-helmet';
 
 import authRouter from './apis/auth';
 import database from './database';
+import { DATABASE_CONNECTION_STRING, ENV, ENVS } from './configuration';
 import delay from './hooks/delay';
-import { ENV, ENVS } from './configuration';
 import indexRouter from './apis/index';
 import gracefulShutdown from './utilities/graceful-shutdown';
 import seeding from './database/seeding';
@@ -21,7 +21,7 @@ async function buildServer() {
 
   server.addHook('onRequest', delay);
 
-  await database.connect();
+  await database.connect(DATABASE_CONNECTION_STRING);
   await seeding(database);
 
   await server.register(bodyParser);

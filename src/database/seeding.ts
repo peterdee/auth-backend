@@ -1,12 +1,12 @@
 import { hash } from 'scryptwrap';
 
 import { ADMIN_EMAIL, ADMIN_PASSWORD, ROLES } from '../configuration';
-import Database, { User } from './index';
+import Database from './index';
 import log from '../utilities/log';
 
 export default async function seeding(database: typeof Database): Promise<Error | void> {
   try {
-    const existing = await database.UserModel.findOne({
+    const existing = await database.UserCollection.findOne({
       email: ADMIN_EMAIL,
     });
     if (existing) {
@@ -14,13 +14,11 @@ export default async function seeding(database: typeof Database): Promise<Error 
     }
 
     const now = Date.now();
-    const userRecord: User = await database.UserModel.create({
-      created: now,
+    const userRecord = await database.UserCollection.create({
       email: ADMIN_EMAIL,
       firstName: 'Admin',
       lastName: 'Admin',
       role: ROLES.admin,
-      updated: now,
     });
 
     const idField = '_id';
@@ -30,16 +28,12 @@ export default async function seeding(database: typeof Database): Promise<Error 
     ]);
 
     await Promise.all([
-      database.PasswordModel.create({
-        created: now,
+      database.PasswordCollection.create({
         hash: passwordHash,
-        updated: now,
         userId: userRecord[idField],
       }),
-      database.PasswordModel.create({
-        created: now,
+      database.UserSecretCollection.create({
         secret,
-        updated: now,
         userId: userRecord[idField],
       }),
     ]);

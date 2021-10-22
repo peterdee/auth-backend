@@ -1,10 +1,17 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../configuration';
+import {
+  ENV,
+  ENVS,
+  RESPONSE_MESSAGES,
+  RESPONSE_STATUSES,
+} from '../configuration';
+import log from './log';
 import store from '../store';
 
 interface ResponseParams {
   data?: any;
+  error?: Error | null;
   info?: string;
   reply: FastifyReply;
   request: FastifyRequest;
@@ -23,6 +30,7 @@ interface ResponseObject {
 
 export default function createResponse({
   data,
+  error = null,
   info = RESPONSE_MESSAGES.ok,
   reply,
   request,
@@ -39,6 +47,14 @@ export default function createResponse({
 
   if (data) {
     responseObject.data = data;
+  }
+
+  if (error && ENV === ENVS.development) {
+    log(
+      `-- ${RESPONSE_MESSAGES.internalServerError}\n${typeof error === 'object'
+        ? JSON.stringify(error)
+        : error}`,
+    );
   }
 
   return reply.code(status).send(responseObject);
