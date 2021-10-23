@@ -6,6 +6,7 @@ import response from '../../utilities/response';
 import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../../configuration';
 import service from './auth.service';
 import { SignUpRequest } from './types';
+import validateEmail from '../../utilities/validate-email';
 
 export default async function signInController(
   request: FastifyRequest<SignUpRequest>,
@@ -30,8 +31,17 @@ export default async function signInController(
     }
 
     const processedEmail = email.trim().toLowerCase();
-    const processedFirstName = firstName.trim().toLowerCase();
-    const processedLastName = lastName.trim().toLowerCase();
+    if (!validateEmail(processedEmail)) {
+      return response({
+        info: RESPONSE_MESSAGES.invalidData,
+        reply,
+        request,
+        status: RESPONSE_STATUSES.badRequest,
+      });
+    }
+
+    const processedFirstName = firstName.trim();
+    const processedLastName = lastName.trim();
     const processedPassword = password.trim();
 
     const existingRecord = await service.getRecordByField<User>('User', 'email', processedEmail);
