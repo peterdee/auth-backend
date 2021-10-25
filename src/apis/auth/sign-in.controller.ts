@@ -35,7 +35,6 @@ export default async function signInController(
     }
 
     const idField = '_id';
-
     const result: [Password, UserSecret] = await Promise.all([
       service.getRecordByField<Password>('Password', 'userId', userRecord[idField]),
       service.getRecordByField<UserSecret>('UserSecret', 'userId', userRecord[idField]),

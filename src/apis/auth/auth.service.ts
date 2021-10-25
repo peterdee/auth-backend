@@ -13,7 +13,7 @@ export default {
   createRecord: async <T>(
     collection: string,
     data: any,
-  ): Promise<T> => database[`${collection}Model`].create({
+  ): Promise<T> => database[`${collection}Collection`].create({
     ...data,
     created: Date.now(),
     updated: Date.now(),
