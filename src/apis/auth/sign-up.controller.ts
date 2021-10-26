@@ -3,7 +3,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import generateString from '../../utilities/generate-string';
 import { Password, User, UserSecret } from '../../database';
 import response from '../../utilities/response';
-import { RESPONSE_MESSAGES, RESPONSE_STATUSES } from '../../configuration';
+import { RESPONSE_MESSAGES, RESPONSE_STATUSES, ROLES } from '../../configuration';
 import service from './auth.service';
 import { SignUpRequest } from './types';
 import validateEmail from '../../utilities/validate-email';
@@ -63,6 +63,7 @@ export default async function signInController(
           email: processedEmail,
           firstName: processedFirstName,
           lastName: processedLastName,
+          role: ROLES.user,
         },
       ),
       service.createHash(processedPassword),

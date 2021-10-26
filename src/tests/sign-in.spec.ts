@@ -21,7 +21,7 @@ interface ResponseData {
 const url = '/api/auth/sign-in';
 
 describe(
-  'Test Auth controllers',
+  'Test Auth controllers: sign in',
   (): void => {
     it(
       'Should return a "MISSING_DATA" error',

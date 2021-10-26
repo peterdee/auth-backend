@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { LightMyRequestResponse } from 'fastify';
 
 import {
   ADMIN_EMAIL,
@@ -17,24 +18,42 @@ interface ResponseData {
   user: User;
 }
 
-const TEST_EMAIL_INVALID = 'test@email';
-const TEST_EMAIL_VALID = 'test@email.com';
-const TEST_FIRST_NAME = 'Test';
-const TEST_LAST_NAME = 'Test';
-const TEST_PASSWORD = 'test';
+const url = '/api/auth/sign-up';
 
 describe(
-  'Test Auth controllers',
+  'Test Auth controllers: sign up',
   (): void => {
     it(
-      'Should sign user up',
+      'Should return a "MISSING_DATA" error',
       async (): Promise<void> => {
         const server = await buildServer();
-        const url = '/api/auth/sign-up';
-        const response: any = await server.inject({
+        const response: LightMyRequestResponse = await server.inject({
           method: 'POST',
           payload: {
-            email: TEST_EMAIL_INVALID,
+            email: ADMIN_EMAIL,
+          },
+          url,
+        });
+
+        await server.close();
+
+        expect(response.statusCode).to.equal(400);
+
+        const responseJSON = response.json();
+        expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.missingData);
+        expect(responseJSON.request).to.eq(`${url} [POST]`);
+      },
+    );
+    it(
+      'Should return an "INVALID_DATA" error',
+      async (): Promise<void> => {
+        const server = await buildServer();
+        const response: LightMyRequestResponse = await server.inject({
+          method: 'POST',
+          payload: {
+            email: 'invalid',
+            firstName: 'Test',
+            lastName: 'Test',
             password: ADMIN_PASSWORD,
           },
           url,
@@ -42,16 +61,64 @@ describe(
 
         await server.close();
 
-        // expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).to.equal(400);
 
-        // const responseJSON = response.json();
-        // expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.ok);
-        // expect(responseJSON.request).to.eq(`${url} [POST]`);
+        const responseJSON = response.json();
+        expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.invalidData);
+        expect(responseJSON.request).to.eq(`${url} [POST]`);
+      },
+    );
+    it(
+      'Should return an "EMAIL_ALREADY_IN_USE" error',
+      async (): Promise<void> => {
+        const server = await buildServer();
+        const response: LightMyRequestResponse = await server.inject({
+          method: 'POST',
+          payload: {
+            email: ADMIN_EMAIL,
+            firstName: 'Test',
+            lastName: 'Test',
+            password: 'test',
+          },
+          url,
+        });
 
-        // const data: ResponseData = responseJSON.data;
-        // expect(data.tokens.access).to.exist;
-        // expect(data.tokens.refresh).to.exist;
-        // expect(data.user.role).to.eq(ROLES.admin);
+        await server.close();
+
+        expect(response.statusCode).to.equal(409);
+
+        const responseJSON = response.json();
+        expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.emailAlreadyInUse);
+        expect(responseJSON.request).to.eq(`${url} [POST]`);
+      },
+    );
+    it(
+      'Should sign user up',
+      async (): Promise<void> => {
+        const server = await buildServer();
+        const response: LightMyRequestResponse = await server.inject({
+          method: 'POST',
+          payload: {
+            email: `test-${ADMIN_EMAIL}`,
+            firstName: 'Test',
+            lastName: 'Test',
+            password: 'test',
+          },
+          url,
+        });
+
+        await server.close();
+
+        expect(response.statusCode).to.equal(200);
+
+        const responseJSON = response.json();
+        expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.ok);
+        expect(responseJSON.request).to.eq(`${url} [POST]`);
+
+        const data: ResponseData = responseJSON.data;
+        expect(data.tokens.access).to.exist;
+        expect(data.tokens.refresh).to.exist;
+        expect(data.user.role).to.eq(ROLES.user);
       },
     );
   },
