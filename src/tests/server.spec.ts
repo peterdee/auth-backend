@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { LightMyRequestResponse } from 'fastify';
 
 import buildServer from '../server';
 
@@ -9,7 +10,7 @@ describe(
       'Should launch the server',
       async (): Promise<void> => {
         const server = await buildServer();
-        const [responseIndex, responseAPI] = await Promise.all([
+        const [responseIndex, responseAPI]: LightMyRequestResponse[] = await Promise.all([
           server.inject({
             method: 'GET',
             url: '/',
