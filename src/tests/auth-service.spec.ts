@@ -72,6 +72,25 @@ describe(
       },
     );
     it(
+      'Should delete database records',
+      async (): Promise<void> => {
+        await service.deleteRecordByQuery(
+          'User',
+          {
+            email: TEST_EMAIL,
+            role: ROLES.user,
+          },
+        );
+
+        const result = await service.getRecordByField(
+          'User',
+          'email',
+          TEST_EMAIL,
+        );
+        expect(result).to.not.exist;
+      },
+    );
+    it(
       'Should create token pair',
       async (): Promise<void> => {
         const admin = await service.getRecordByField<User>(

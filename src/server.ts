@@ -6,7 +6,12 @@ import helmet from 'fastify-helmet';
 
 import authRouter from './apis/auth';
 import database from './database';
-import { DATABASE_CONNECTION_STRING, ENV, ENVS } from './configuration';
+import {
+  DATABASE_CONNECTION_STRING,
+  ENV,
+  ENVS,
+  TESTING,
+} from './configuration';
 import delay from './hooks/delay';
 import indexRouter from './apis/index';
 import gracefulShutdown from './utilities/graceful-shutdown';
@@ -14,9 +19,11 @@ import seeding from './database/seeding';
 
 async function buildServer() {
   const server = fastify({
-    logger: {
-      prettyPrint: ENV === ENVS.development,
-    },
+    logger: TESTING !== 'true'
+      ? {
+        prettyPrint: ENV === ENVS.development,
+      }
+      : false,
   });
 
   server.addHook('onRequest', delay);
@@ -38,22 +45,24 @@ async function buildServer() {
   await server.register(authRouter);
   await server.register(indexRouter);
 
-  process.on(
-    'SIGINT',
-    (signal: string): Promise<void> => gracefulShutdown(
-      signal,
-      server,
-      database,
-    ),
-  );
-  process.on(
-    'SIGTERM',
-    (signal: string): Promise<void> => gracefulShutdown(
-      signal,
-      server,
-      database,
-    ),
-  );
+  if (TESTING !== 'true') {
+    process.on(
+      'SIGINT',
+      (signal: string): Promise<void> => gracefulShutdown(
+        signal,
+        server,
+        database,
+      ),
+    );
+    process.on(
+      'SIGTERM',
+      (signal: string): Promise<void> => gracefulShutdown(
+        signal,
+        server,
+        database,
+      ),
+    );
+  }
 
   return server;
 }

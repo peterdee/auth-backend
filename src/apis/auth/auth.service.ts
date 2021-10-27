@@ -4,6 +4,10 @@ import { createToken } from '../../utilities/jwt';
 import database from '../../database';
 import { REFRESH_TOKEN_EXPIRATION } from '../../configuration';
 
+type Query = {
+  [key: string]: any;
+}
+
 export default {
   compareHashes: async (
     plaintext: string,
@@ -32,6 +36,10 @@ export default {
       secret,
     }),
   ]),
+  deleteRecordByQuery: async (
+    collection: string,
+    query: Query,
+  ): Promise<void> => database[`${collection}Collection`].deleteMany(query),
   getRecordByField: async <T>(
     collection: string,
     field: string,

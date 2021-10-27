@@ -1,5 +1,11 @@
 import { RequestGenericInterface } from 'fastify';
 
+export interface GetRecoveryRequest extends RequestGenericInterface {
+  Params: {
+    email?: string;
+  };
+}
+
 export interface SignInRequest extends RequestGenericInterface {
   Body: {
     email?: string;

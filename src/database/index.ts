@@ -7,11 +7,13 @@ import {
 
 import log from '../utilities/log';
 import PasswordSchema, { Password } from './schemas/Password.schema';
+import RecoveryCodeSchema, { RecoveryCode } from './schemas/RecoveryCode.schema';
 import UserSchema, { User } from './schemas/User.schema';
 import UserSecretSchema, { UserSecret } from './schemas/UserSecret.schema';
 
 export {
   Password,
+  RecoveryCode,
   User,
   UserSecret,
 };
@@ -20,6 +22,8 @@ class Database {
   private Connection: Connection | null = null;
 
   public PasswordCollection: Model<Password>;
+
+  public RecoveryCodeCollection: Model<RecoveryCode>;
 
   public UserCollection: Model<User>;
 
@@ -59,6 +63,10 @@ class Database {
       );
 
       this.PasswordCollection = this.Connection.model<Password>('Password', PasswordSchema);
+      this.RecoveryCodeCollection = this.Connection.model<RecoveryCode>(
+        'RecoveryCode',
+        RecoveryCodeSchema,
+      );
       this.UserCollection = this.Connection.model<User>('User', UserSchema);
       this.UserSecretCollection = this.Connection.model<UserSecret>('UserSectet', UserSecretSchema);
 

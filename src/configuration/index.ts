@@ -15,6 +15,7 @@ export const {
   ADMIN_PASSWORD,
   DATABASE_CONNECTION_STRING,
   ENV = ENVS.development,
+  TESTING = 'false',
 } = environment;
 
 export const REFRESH_TOKEN_EXPIRATION = (
@@ -22,6 +23,11 @@ export const REFRESH_TOKEN_EXPIRATION = (
 ) * 24 * 60 * 60;
 
 export const PORT = Number(environment.PORT) || 6500;
+
+export const RECOVERY_CODE_TYPES = {
+  account: 'account',
+  email: 'email',
+} as const;
 
 export const RESPONSE_MESSAGES = {
   accessDenied: 'ACCESS_DENIED',
