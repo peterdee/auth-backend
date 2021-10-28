@@ -15,6 +15,8 @@ export const {
   ADMIN_PASSWORD,
   DATABASE_CONNECTION_STRING,
   ENV = ENVS.development,
+  MAILER_SERVICE_EMAIL,
+  MAILER_SERVICE_PASSWORD,
   TESTING = 'false',
 } = environment;
 

@@ -9,6 +9,7 @@ import {
   RESPONSE_STATUSES,
 } from '../../configuration';
 import response from '../../utilities/response';
+import sendEmail from '../../utilities/mailer';
 import service from './auth.service';
 
 export default async function getRecovery(
@@ -51,12 +52,17 @@ export default async function getRecovery(
       'RecoveryCode',
       {
         code,
-        type: RECOVERY_CODE_TYPES.account,
+        expiresAt: Date.now() + 60 * 60 * 4 * 1000,
+        recoveryType: RECOVERY_CODE_TYPES.account,
         userId: userRecord[idField],
       },
     );
 
-    // TODO: send code to the user
+    sendEmail(
+      processedEmail,
+      'Account Recovery',
+      `<div>Recovery code is ${code}</div>`,
+    );
 
     return response({
       request,
