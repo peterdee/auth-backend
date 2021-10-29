@@ -6,15 +6,6 @@ import {
   RESPONSE_MESSAGES,
 } from '../configuration';
 import buildServer from '../server';
-import { User } from '../database';
-
-interface ResponseData {
-  tokens: {
-    access: string;
-    refresh: string;
-  };
-  user: User;
-}
 
 const url = '/api/auth/recovery';
 
@@ -52,32 +43,23 @@ describe(
         expect(responseJSON.request).to.eq(`${url}/${ADMIN_EMAIL}x [GET]`);
       },
     );
-    // it(
-    //   'Should sign user in',
-    //   async (): Promise<void> => {
-    //     const server = await buildServer();
-    //     const response: LightMyRequestResponse = await server.inject({
-    //       method: 'POST',
-    //       payload: {
-    //         email: ADMIN_EMAIL,
-    //         password: ADMIN_PASSWORD,
-    //       },
-    //       url,
-    //     });
+    it(
+      'Should get a 200 response',
+      async (): Promise<void> => {
+        const server = await buildServer();
+        const response: LightMyRequestResponse = await server.inject({
+          method: 'GET',
+          url: `${url}/${ADMIN_EMAIL}`,
+        });
 
-    //     await server.close();
+        await server.close();
 
-    //     expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).to.equal(200);
 
-    //     const responseJSON = response.json();
-    //     expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.ok);
-    //     expect(responseJSON.request).to.eq(`${url} [POST]`);
-
-    //     const data: ResponseData = responseJSON.data;
-    //     expect(data.tokens.access).to.exist;
-    //     expect(data.tokens.refresh).to.exist;
-    //     expect(data.user.role).to.eq(ROLES.admin);
-    //   },
-    // );
+        const responseJSON = response.json();
+        expect(responseJSON.info).to.eq(RESPONSE_MESSAGES.ok);
+        expect(responseJSON.request).to.eq(`${url}/${ADMIN_EMAIL} [GET]`);
+      },
+    );
   },
 );
