@@ -1,18 +1,18 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-import generateString from '../../utilities/generate-string';
-import { GetRecoveryRequest } from './types';
-import { RecoveryCode, User } from '../../database';
 import {
   CLIENT_URL,
   RECOVERY_CODE_TYPES,
   RESPONSE_MESSAGES,
   RESPONSE_STATUSES,
 } from '../../configuration';
+import { createAccountRecoveryEmailTemplate } from '../../utilities/email-templates';
+import generateString from '../../utilities/generate-string';
+import { GetRecoveryRequest } from './types';
+import { RecoveryCode, User } from '../../database';
 import response from '../../utilities/response';
 import sendEmail from '../../utilities/mailer';
 import service from './auth.service';
-import { createAccountRecoveryEmailTemplate } from '../../utilities/email-templates';
 
 export default async function getRecovery(
   request: FastifyRequest<GetRecoveryRequest>,

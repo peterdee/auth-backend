@@ -1,5 +1,12 @@
 import { RequestGenericInterface } from 'fastify';
 
+export interface ConfirmRecoveryRequest extends RequestGenericInterface {
+  Body: {
+    code?: string;
+    password?: string;
+  };
+}
+
 export interface GetRecoveryRequest extends RequestGenericInterface {
   Params: {
     email?: string;
