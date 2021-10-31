@@ -4,6 +4,7 @@ import generateString from '../../utilities/generate-string';
 import { GetRecoveryRequest } from './types';
 import { RecoveryCode, User } from '../../database';
 import {
+  CLIENT_URL,
   RECOVERY_CODE_TYPES,
   RESPONSE_MESSAGES,
   RESPONSE_STATUSES,
@@ -11,6 +12,7 @@ import {
 import response from '../../utilities/response';
 import sendEmail from '../../utilities/mailer';
 import service from './auth.service';
+import { createAccountRecoveryEmailTemplate } from '../../utilities/email-templates';
 
 export default async function getRecovery(
   request: FastifyRequest<GetRecoveryRequest>,
@@ -58,10 +60,15 @@ export default async function getRecovery(
       },
     );
 
+    const template = createAccountRecoveryEmailTemplate({
+      firstName: userRecord.firstName,
+      lastName: userRecord.lastName,
+      recoveryLink: `${CLIENT_URL}/recovery/code/${code}`,
+    });
     sendEmail(
       processedEmail,
-      'Account Recovery',
-      `<div>Recovery code is ${code}</div>`,
+      template.subject,
+      template.message,
     );
 
     return response({

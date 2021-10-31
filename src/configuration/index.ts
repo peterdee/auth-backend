@@ -13,10 +13,12 @@ export const ENVS = {
 export const {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
+  CLIENT_URL = 'http://localhost:3000',
   DATABASE_CONNECTION_STRING,
   ENV = ENVS.development,
   MAILER_SERVICE_EMAIL,
   MAILER_SERVICE_PASSWORD,
+  SERVER_NAME = 'AUTH SERVER',
   TESTING = 'false',
 } = environment;
 
