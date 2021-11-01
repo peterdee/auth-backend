@@ -47,4 +47,13 @@ export default {
   ): Promise<T> => database[`${collection}Collection`].findOne({
     [field]: value,
   }),
+  getRecordByQuery: async <T>(
+    collection: string,
+    query: Query,
+  ): Promise<T> => database[`${collection}Collection`].findOne(query),
+  updateRecordByQuery: async <T>(
+    collection: string,
+    query: Query,
+    update: Query,
+  ): Promise<T> => database[`${collection}Collection`].updateOne(query, update),
 };

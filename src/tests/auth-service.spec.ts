@@ -49,12 +49,21 @@ describe(
           },
         );
 
-        const result = await service.getRecordByField(
-          'User',
-          'email',
-          TEST_EMAIL,
-        );
-        expect(result).to.exist;
+        const results = await Promise.all([
+          service.getRecordByField(
+            'User',
+            'email',
+            TEST_EMAIL,
+          ),
+          service.getRecordByQuery(
+            'User',
+            {
+              email: TEST_EMAIL,
+            },
+          ),
+        ]);
+        expect(results[0]).to.exist;
+        expect(results[1]).to.exist;
 
         try {
           await service.createRecord<User>(

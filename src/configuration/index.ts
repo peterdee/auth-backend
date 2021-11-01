@@ -38,6 +38,7 @@ export const RESPONSE_MESSAGES = {
   emailAlreadyInUse: 'EMAIL_ALREADY_IN_USE',
   internalServerError: 'INTERNAL_SERVER_ERROR',
   invalidData: 'INVALID_DATA',
+  invalidRecoveryCode: 'INVALID_RECOVERY_CODE',
   missingData: 'MISSING_DATA',
   ok: 'OK',
 } as const;

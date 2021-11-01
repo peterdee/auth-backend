@@ -1,14 +1,14 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
+import { ConfirmRecoveryRequest } from './types';
+import generateString from '../../utilities/generate-string';
 import {
   RECOVERY_CODE_TYPES,
   RESPONSE_MESSAGES,
   RESPONSE_STATUSES,
 } from '../../configuration';
-import { ConfirmRecoveryRequest } from './types';
-import { RecoveryCode, User } from '../../database';
+import { Password, RecoveryCode, User, UserSecret } from '../../database';
 import response from '../../utilities/response';
-import sendEmail from '../../utilities/mailer';
 import service from './auth.service';
 
 export default async function confirmRecovery(
@@ -36,6 +36,44 @@ export default async function confirmRecovery(
         status: RESPONSE_STATUSES.badRequest,
       });
     }
+
+    const existingCode = await service.getRecordByQuery<RecoveryCode>(
+      'RecoveryCode',
+      {
+        code,
+        recoveryType: RECOVERY_CODE_TYPES.account,
+      },
+    );
+    if (!existingCode) {
+      return response({
+        info: RESPONSE_MESSAGES.invalidRecoveryCode,
+        reply,
+        request,
+        status: RESPONSE_STATUSES.badRequest,
+      });
+    }
+
+    const [newHash, newSecret] = await Promise.all([
+      service.createHash(password),
+      service.createHash(`${existingCode.userId}-${generateString(32)}-${Date.now()}`),
+    ]);
+
+    await Promise.all([
+      service.updateRecordByQuery<Password>(
+        'Password',
+        {
+          hash: newHash,
+          updated: Date.now(),
+        },
+      ),
+      service.updateRecordByQuery<UserSecret>(
+        'UserSecret',
+        {
+          hash: newHash,
+          updated: Date.now(),
+        },
+      ),
+    ]);
 
     return response({
       request,
