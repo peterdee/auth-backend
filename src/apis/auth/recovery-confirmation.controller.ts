@@ -3,11 +3,15 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { ConfirmRecoveryRequest } from './types';
 import generateString from '../../utilities/generate-string';
 import {
+  Password,
+  RecoveryCode,
+  UserSecret,
+} from '../../database';
+import {
   RECOVERY_CODE_TYPES,
   RESPONSE_MESSAGES,
   RESPONSE_STATUSES,
 } from '../../configuration';
-import { Password, RecoveryCode, User, UserSecret } from '../../database';
 import response from '../../utilities/response';
 import service from './auth.service';
 
@@ -58,19 +62,26 @@ export default async function confirmRecovery(
       service.createHash(`${existingCode.userId}-${generateString(32)}-${Date.now()}`),
     ]);
 
+    const now = Date.now();
     await Promise.all([
       service.updateRecordByQuery<Password>(
         'Password',
         {
+          userId: existingCode.userId,
+        },
+        {
           hash: newHash,
-          updated: Date.now(),
+          updated: now,
         },
       ),
       service.updateRecordByQuery<UserSecret>(
         'UserSecret',
         {
-          hash: newHash,
-          updated: Date.now(),
+          userId: existingCode.userId,
+        },
+        {
+          secret: newSecret,
+          updated: now,
         },
       ),
     ]);
