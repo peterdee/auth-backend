@@ -64,6 +64,13 @@ export default async function confirmRecovery(
 
     const now = Date.now();
     await Promise.all([
+      service.deleteRecordByQuery(
+        'RecoveryCode',
+        {
+          code,
+          userId: existingCode.userId,
+        },
+      ),
       service.updateRecordByQuery<Password>(
         'Password',
         {
